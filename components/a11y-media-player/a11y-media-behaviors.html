@@ -1,0 +1,286 @@
+<link rel="import" href="../responsive-utility/responsive-utility.html">
+<!--
+`a11y-media-behaviors`
+A set of behaviors for a11y-media components.
+@microcopy - the mental model for this element
+ - 
+ - 
+-->
+
+<script>
+  window.a11yMediaBehaviors = window.a11yMediaBehaviors || {};
+  // ensure we have consistent reporting of haxBodyProperties
+  window.a11yMediaBehaviors.PlayerBehaviors = {
+    properties: {
+      /** 
+        * Accent color on controls. Default is blue.
+        */ 
+      accentColor: {
+        type: String,
+        value: null,
+        reflectToAttribute: true,
+      },
+      /** 
+        * Allow this media to play concurrently with other a11y-media-players? 
+        * Default is to pause this a11y-media-player when other a11y-media-player starts playing.
+        */ 
+        allowConcurrent: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+      },
+      /** 
+        * Is this an audio file?
+        */ 
+      audioOnly: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
+      },
+      /** 
+        * autoplay is an option, 
+        * but generally not recommended for a11y
+        */ 
+      autoplay: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * show closed captions
+        */
+      cc: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * disable fullscreen option 
+        */
+      dark: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
+      /** 
+        * disable fullscreen option 
+        */
+      disableFullscreen: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * Is fullscreen mode?
+        */
+      fullscreen: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * Does the player have tracks?
+        */
+      hasCaptions: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * Does the player have an interactive transcript?
+        */
+      hasTranscript: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * The width of the media player. 
+        */
+      height: {
+        type: String,
+        value: 'unset'
+      },
+      /** 
+        * Hide elapsed time?
+        */
+      hideElapsedTime: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * Hide the transcript?
+        */
+      hideTranscript: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
+      },
+      /**
+        * Language
+        */
+      lang: {
+        type: String,
+        value: 'en',
+        reflectToAttribute: true,
+      },
+      /** 
+        * Loop the video?
+        */
+      loop: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * Is the size mobile?
+        */
+      mobileSize: {
+        type: Boolean,
+        computed: '_testAttribute(responsiveSize,"xs")',
+        notify: true,
+        reflectToAttribute: true
+      },
+      /** 
+        * Is audio muted?
+        */
+      muted: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * Is it an audio player with no thumbnail?
+        */
+      noHeight: {
+        type: Boolean,
+        computed: '_getNoHeight(audioOnly,thumbnailSrc)',
+        reflectToAttribute: true
+      },
+      /**
+        * Playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
+        */
+      playbackRate: {
+        type: Number,
+        value: 1
+      },
+      /**
+        * Is media playing?
+        */
+      playing: {
+        type: Boolean,
+        value: false
+      },
+      /**
+        * Size of the a11y media element for responsive styling
+        */
+      responsiveSize: {
+        type: String,
+        notify: true,
+        reflectToAttribute: true
+      },
+      /**
+        * Source of optional thumbnail image
+        */
+      thumbnailSrc: {
+        type: String,
+        value: null,
+        reflectToAttribute: true
+      },
+      /** 
+        * array of tracks and cues
+        */
+      tracks: {
+        type: Array,
+        value: null
+      },
+      /** 
+        * Range is 0 to 100. Default should not be loud enough to overpower screen readers. 
+        */
+      volume: {
+        type: Number,
+        value: 70,
+      },
+      /** 
+        * The width of the media player. 
+        */
+      width: {
+        type: String,
+        value: 'unset'
+      }
+    },
+    /**
+      * returns true if an attribute is set to a value
+      */ 
+    _getNoHeight: function(audioOnly,thumbnailSrc){
+      return audioOnly && (thumbnailSrc === null || thumbnailSrc === undefined);
+    },
+    /**
+      * returns true if an attribute is set to a value
+      */ 
+      _testAttribute: function(attr,val){
+      return attr === val;
+    }
+  };
+  window.a11yMediaBehaviors.TranscriptBehaviors = {
+    properties: {
+      /** 
+        * Accent color on controls. Default is blue.
+        */ 
+      accentColor: {
+        type: String,
+        value: null,
+        reflectToAttribute: true,
+      },
+      /** 
+        * disable interactive mode that makes the transcript clickable 
+        */
+      disableInteractive: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * disable autoscrolling as transcript plays 
+        */
+      disableScroll: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * show cue's start and end time 
+        */
+      hideTimestamps: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * show cue's start and end time 
+        */
+      media: {
+        type: Object,
+        value: {},
+      },
+      /**
+        * the search tool for the transcript
+        */
+      search: {
+        type: Object,
+        value: null,
+      },
+      /**
+        * selected transcript track id
+        */
+      selectedTranscript: {
+        type: String,
+        value: '0',
+      }
+    }
+  };
+  window.a11yMediaBehaviors.UtilityFunctions = {
+    /**
+      * calls responsive-utility to get parent's responsive size
+      */ 
+    _addResponsiveUtility: function(data){
+      let root = this, data2 = data !== undefined ? data : {
+        "element": root,
+        "attribute": "responsive-size",
+        "relativeToParent": true,
+      };
+      Polymer.ResponsiveUtility.requestAvailability();
+      root.fire('responsive-element',data2);
+    }
+  };
+</script>
+
